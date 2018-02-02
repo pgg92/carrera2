@@ -1,0 +1,17 @@
+
+for t in temp loop
+	auxnombre:=t.temporada;
+	cont:=cont+1;
+	exit when cont=1;
+end loop;
+
+--------------------------
+
+upper()
+
+----------------------------
+
+select sum(columnas a operar o lo que sea)
+
+having <= / >=  all(sentenia sql)
+

@@ -1,0 +1,66 @@
+
+7.1 → 	la funcion f que devuelve una referencia es correcta.
+		Int &incremento(int &x) {int v; return v;}
+		falso, no se puede devolver referencias de variables locales
+		
+10.a -> mienras que las colas son estructuras FIFO las pilas son estructuras LIFO (v)
+
+11.a -> el numero maximo de nodos en el nivel i de un arbol binario es 2^i - 1 (f)
+11.b -> el numero maximo de nodos en el nivel i de un arbol binario es 2^(i-1) (v)
+11.c -> el numero maximo de nodos en el nivel 10 de un arbol binariol es 1024 (f)
+		2^(i-1) = 512
+
+
+/*
+
+constructoras generadoras, devuelven el mismo tipo que defines
+constructoras modificadoras, 
+constructoras consultoras, devuelve distinto tipo
+
+/*
+
+19.c -> f, porque no es derivada
+
+/*
+(27)
+inserccion -> como maximo una rotacion
+borrado -> una por cada nodo de busqueda
+
+/*
+(29)
+mutlicamino -> maximo nº de hijos por nodo
+generales -> no hay limite
+/*
+
+
+/*
+(30)
+	1		 1
+	 \		/
+	  2	   2
+
+estos dos arboles tienen mismo recorrido, niveles.
+/*
+
+
+/*
+/*
+/*
+/*
+/*
+/*
+/*
+/*
+/*
+
+
+
+
+
+
+
+
+
+
+
+

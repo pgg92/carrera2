@@ -1,0 +1,146 @@
+create or replace function ejercicio1(pequipo jugar.equipo1%type) return number is
+  total number;
+  cursor cjugar is
+    select e1.nivel ne1, e2.nivel ne2, jugar.* from
+    equipo e1, equipo e2, jugar
+    where e1.codigo = jugar.equipo1 and e2.codigo = jugar.equipo2
+    and (e1.codigo = pequipo or e2.codigo = pequipo);
+  jugados number;
+  existe number;
+  sin_partidos exception;
+  no_existe_equipo exception;
+begin
+  select count(*) into existe from equipo where codigo = pequipo;
+  if(existe = 0) then
+    raise no_existe_equipo;
+  end if;
+  select count(*) into jugados from jugar where equipo1 = pequipo or 
+  equipo2 = pequipo;
+  if jugados = 0 then
+    raise sin_partidos;
+  end if;
+  total := 0;
+  for creg in cjugar loop
+    if creg.goles1 = creg.goles2 then
+      total := total + 0.5;
+    elsif creg.goles1 > creg.goles2 and creg.equipo1 = pequipo then
+      if creg.ne2 < creg.ne1 then
+        total := total + 1;
+      elsif creg.ne2 > creg.ne1 then
+        total := total + 3;
+      else
+        total := total + 2;
+      end if;
+    elsif creg.goles2 > creg.goles1 and creg.equipo2 = pequipo then
+      if creg.ne1 < creg.ne2 then
+        total := total + 1;
+      elsif creg.ne1 > creg.ne2 then
+        total := total + 3;
+      else
+        total := total + 2;
+      end if;          
+    end if;
+  end loop;
+  return total;
+  exception
+    when no_existe_equipo then
+      dbms_output.put_line('me lacomes');
+    when sin_partidos then
+      dbms_output.put_line('ramses la chupa');
+end;
+
+
+
+create or replace procedure ejercicio3(x number) is
+  cursor centrino is
+    select nif, nombre, nivel, count(responsable.entrenador) numEquipos
+    from entrenador left join responsable on nif = responsable.entrenador 
+    group by nif, nombre
+    having count(*) < x;
+  entrenadorSel entrenador.nif%type;
+  cursor cresponsable is
+    select equipo.codigo, equipo.nombre from responsable, equipo where 
+    entrenador = entrenadorSel;
+  cuantos number;
+  cantidad number;
+  asociacionE asociacion.codigo%type;
+  cursor casociaciones is
+    select count(*) equipos from equipo
+    group by asociacion
+    having count(*) > x;
+  alfonso exception;
+begin
+  for creg in centrino loop
+    dbms_output.put_line(creg.nif ||' '|| creg.nombre ||creg.numEquipos);
+    entrenadorSel := creg.nif;
+    for creg2 in cresponsable loop
+      select count(*) into cuantos from responsable where equipo = creg2.codigo;
+      dbms_output.put_line(creg2.codigo||' '||creg2.nombre||' '||cuantos);
+    end loop;
+    if creg.numEquipos = 0 then
+      select asociacion into asociacionE from entrenador where creg.nif = nif;
+      select count(*) into cantidad from equipo
+      where equipo.nivel = creg.nivel and asociacion = asociacionE;
+      begin
+        insert into libre values(creg.nif, creg.nombre, cantidad);
+      exception
+        when dup_val_on_index then
+        null;
+      end;
+    end if;
+  end loop;
+  open casociaciones;
+  if casociaciones%rowcount = 0 then
+    close casociaciones;
+    raise alfonso;
+  else
+    close casociaciones;
+  end if;
+  exception
+    when alfonso then
+      dbms_output.put_line('no hay cojones');
+end;
+
+
+create or replace trigger ejercicio2 
+before insert or update of asociacion on equipo
+for each row
+declare
+  -- numero de entrenadores que tienen esa asociacion
+  cuantosEntrenadores number;
+  -- entrenadores de un nivel concreto
+  nivelSel entrenador.nivel%type;
+  asociacionSel asociacion.codigo%type;
+  cursor c1 is
+    select * from entrenador where nivel = :new.nivel and asociacion = :new.asociacion;
+begin 
+  select count(*) into cuantosEntrenadores
+  from equipo where asociacion = :new.asociacion;
+  if cuantosEntrenadores = 0 then
+    raise_application_error(-20000, 'la asociacion ' || :new.nombre || ' no tiene entrenadores nazis');
+  end if;
+  for creg in  c1 loop
+    insert into responsable (entrenador, equipo) values (creg.nif,  :new.codigo);
+  end loop;
+end;
+
+
+create or replace trigger ejericicio 
+before insert or update of importe on reparar 
+for each row
+declare 
+  nombrePropietario vehiculo.propietario%type;
+  pagosPen number;
+begin
+  select propietario, pagosPendientes into nombrePropietario, pagosPen
+  from vehiculo where vehiculo.matricula = :new.vehiculo;
+  if :new.importe > 500 then
+    raise_application_error(-20000, 'hay que pedir autorizacion '
+    || nombrePropietario || ' para reparar el vehiculo ' || :new.vehiculo);
+  end if;
+  if :new.importe > 100 and pagosPen > 0 then
+    -- insert into morosos values(:new.vehiculo, nombrePropietario);
+    dbms_output.put_line('el propieataroa ' || nombrePropietario ||
+    ' tiene pene ' || pagosPen);
+  end if;
+end;

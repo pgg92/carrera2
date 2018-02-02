@@ -1,0 +1,12 @@
+refinamiento -> llamar al constructor de la base
+
+-> en C++
+	el tipo de herencia (publica,protegida,privada):
+	cambia lo que ven otras clases lo que yo heredo
+	
+	solo cambia de menos restrictiva a mas restrictiva
+	
+	si ponemos la herencia en publica, desde fuera de la clase podremos ver
+	todo lo que sea publico
+	si lo ponemos en private, desde fuera de la clase no podemos ver
+	lo que hay en la clase

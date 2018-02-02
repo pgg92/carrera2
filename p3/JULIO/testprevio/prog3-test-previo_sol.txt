@@ -1,0 +1,22 @@
+1v
+2f
+3v
+4f
+5f
+6v
+7f
+8v
+9f
+10v
+11v
+12f - es un método abstracto
+13v
+14v
+15f
+16f
+17f
+18f
+19v
+20f
+21f - mayor cohesion
+22v

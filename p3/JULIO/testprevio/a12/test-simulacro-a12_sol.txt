@@ -1,0 +1,40 @@
+1v - son de la misma clase, lo suyo seria hacer una herencia
+2f
+3f
+4f - es generacidad no generalidad
+5
+6f
+7
+8f
+9v
+10v
+11f - es el valor de los objetos y los metodos que tiene invocados
+12v
+13v
+14v
+15v
+16f
+17f
+18f
+19v
+20f
+21f
+22f
+23
+24v - no puedes heredar de implementacion debe ser de interfaz
+25v
+26f - es al reves
+27v
+28v
+29f - el map no
+30v
+31f - 
+32v
+33v
+34v
+35v - tema5diapositiva107
+36v - tema5diapositiva108
+37f - dos consrtuctores con la misma signatura se declaran ...
+38f - no se hereda ni la sobrecarga de operadores, ni constructores, ni destructores ni funciones amigas
+39v
+40f - la clase derivada puede ser abstracta. 

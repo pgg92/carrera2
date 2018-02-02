@@ -1,0 +1,138 @@
+create table profesor(
+  dni char(9) primary key,
+  nombre varchar(25),
+  direccion varchar(100),
+  exclusiva char
+);
+create table escuela(
+  codigo char(5) primary key,
+  presupuesto number,
+  nivel number
+);
+create table perro(
+  codigo char(5) primary key,
+  raza varchar(25),
+  nombre varchar(25)
+);
+create table darclase(
+  profesor char(9) references profesor,
+  escuela char(5) references escuela,
+  numdias number,
+  primary key(profesor, escuela));
+create table acudir(
+  escuela char(5) references escuela,
+  perro char(5) references perro,
+  primary key(escuela, perro)
+);
+alter table escuela add(nombre varchar(50));
+insert into profesor (dni, nombre) values ('1', 'jose');
+insert into profesor (dni, nombre) values ('2', 'pepe');
+insert into profesor (dni, nombre) values ('4', 'pepe');
+insert into escuela (codigo, nombre) values ('11111', 'escuelas nazis');
+insert into escuela (codigo, nombre) values ('22222', 'escuelas de budu');
+insert into escuela (codigo, nombre) values ('33333', 'freedoom schools');
+insert into darclase(profesor, escuela) values('2', '11111');
+insert into darclase(profesor, escuela) values('1', '11111');
+insert into darclase(profesor, escuela) values('1', '33333');
+insert into darclase(profesor, escuela) values('2', '22222');
+--create view trabajar as
+  select dni, nombre, count(*) cuantos from profesor, darclase
+  where profesor.dni = darclase.profesor
+  group by dni, nombre;
+  
+  select dni, nombre, darclase.escuela  from profesor, darclase where profesor.dni = darclase.profesor order by profesor;
+  select dni, nombre, darclase.escuela from profesor left join darclase on profesor.dni = darclase.profesor;
+
+  select dni, nombre, count(darclase.escuela) cuantos from profesor left join darclase
+  on profesor.dni = darclase.profesor
+  group by dni, nombre;
+  set serveroutput on format;
+  -- 
+  declare
+    cursor c1 is select dni, nombre, count(darclase.escuela) cuantos from profesor left join darclase
+    on profesor.dni = darclase.profesor
+    group by dni, nombre;  
+  begin
+    for creg in c1 loop
+      dbms_output.put_line(creg.dni || ' '  || creg.nombre || ' ' || creg.cuantos);
+    end loop;
+  end;
+-- cursor en el que para cada escuela se muestre:
+-- nombre escuela
+-- pepe
+-- jose
+  declare
+    cursor cescuelas is select * from escuela;
+    escuelaSel char(9);
+    cursor cprofesores is select * from profesor, darclase
+    where profesor.dni = darclase.profesor and darclase.escuela = escuelaSel;
+  begin
+ --   escuelaSel := '11111';
+ --   for creg in cprofesores loop
+ --     dbms_output.put_line(creg.dni || ' ' || creg.nombre);
+ --   end loop;
+    for c1 in cescuelas loop
+      escuelaSel := c1.codigo;
+      dbms_output.put_line(c1.nombre);
+      for creg in cprofesores loop
+        dbms_output.put_line(creg.dni || ' ' || creg.nombre);
+      end loop;
+    end loop;
+  end;
+  
+  
+  create
+procedure ejercicio7(praza varchar, pnivel escuela.nivel%type) is
+  -- nombre_perro, codigo_perro, codigo_escuela, nombre_escuela
+  cursor casistir is
+    select perro.nombre pnombre, perro.codigo pcodigo, 
+            escuela.nombre enombre, escuela.codigo ecodigo
+    from perro, escuela, acudir
+    where perro.codigo = acudir.perro and escuela.codigo = acudir.escuela and
+    perro.raza = praza;
+begin
+  for cpoya in casistir loop
+    dbms_output.put_line(cpoya.pnombre || cpoya.pcodigo || cpoya.enombre || cpoya.ecodigo);
+    update escuela set nivel = pnivel where codigo = cpoya.ecodigo;
+  end loop;
+end;
+
+-- crear la tabla saturadas que es una generalizacion de escuela,
+-- donde estan aquellas escuelas que tienen mas de 10 de perros asignados
+-- crear un procedimiento que para cada con mas de 10 perros asignados
+-- los meta en la tabla saturadas.
+create table saturadas(
+  codigo char(5) primary key references escuela
+);
+create or replace
+procedure revisarSaturadas is
+  cursor csaturadas is
+    select escuela.codigo from escuela, acudir
+    where escuela.codigo = acudir.escuela
+    group by escuela.codigo
+    having count(*) > 10;
+    cuantos number;
+begin
+  for creg in csaturadas loop
+    -- si el codigo ya esta en saturadas da error.
+    -- insert into saturadas values(creg.codigo);
+    select count(*) into cuantos from saturadas where codigo = creg.codigo;
+    -- 
+    if cuantos = 0 then
+      insert into saturadas values(creg.codigo);    
+    end if;
+    
+    begin
+      insert into saturadas values(creg.codigo);
+    exception
+      when dup_val_on_index then
+        null;
+    end;
+  end loop;
+end;
+
+
+exec ejercicio7('fjose', 34);
+  
+  
+  

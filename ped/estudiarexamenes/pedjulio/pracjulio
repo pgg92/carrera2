@@ -1,0 +1,437 @@
+// EJERCICIO1
+/* 
+devuelve una lista con los nodos que son hojas en el arbool
+de los nodos del vector pasado como parametro.
+TLiscaCom listaHojas(const TVectorCom &up) const;
+bool esHoja(const TComplejo &p) const;
+*/
+
+TListaCom TABBCom::listaHojas(const TVectorCom& pv) const
+{
+	TListaCom listado;
+	
+	for (int i = 0; i < pv.Tamano(); i++)
+	{
+		if (esHoja(pv[i])
+			listado.InsCabeza(pv[i].c);
+	}
+
+	return listado;
+}
+
+bool esHoja(const TComplejo& p) const
+{
+	bool eshoja = false;
+	
+	if (!nodo)
+		return false;
+	
+	else if (p == nodo->item &&
+			nodo->iz && nodo->de)
+		return true;
+	
+	else if (p < nodo->item)		
+		esHoja = nodo.iz.esHoja(p);
+	
+	else if (p > nodo->item)
+		esHoja = nodo->de.esHoja(p);
+
+	else
+		return false;
+
+	return eshoja;
+		
+}
+
+
+// EJERCICIO2
+/*
+Comprobar si los nodos de la lista estan en el arbol
+Devuelve una lista con las posiciones de forma que si esta
+pone 1 sino pone 0
+int *TABBCom::marcar(const TListaCom &lista) const;
+*/
+
+int* TABBCom::marcar(const TListaCom& lista) const
+{
+	TListaPos* auxpos;
+	int* listado = nullptr;
+	int contador = 0;
+
+	if (lista.Longitud() != 0)
+	{
+		v = new int (li.Longitud());	
+		auxpos = lista.Primera();
+		
+		while (!auxpos.EsVacia())
+		{
+			if(Buscar(auxpos.pos->e))
+				v[i] = 1;
+			else
+				v[i] = 0;
+				
+			auxpos = auxpos.Siguiente();
+			contador++;
+		}
+	}
+
+	return listado;
+}
+
+// EJERCICIO3
+/*
+devuelve una lista con los hijos del complejo de la lista pasada
+TListaCom recogeHijos(const TLiscaCom &lp) const;
+TListaCom hijos(const TComplejo &p) const;
+*/
+
+TListaCom TABBBCom::recogeHijos(const TListaCom& lp) const
+{
+	TListaCom laux;
+	TListaPos paux;
+	
+	paux = lp.Primera();
+	while(paux)
+	{
+		laux = laux + hijos(paux.pos->e);
+		paux = paux.Siguiente();
+	}
+	
+	return laux;
+}
+
+TListaCom TABBBCom::hijos(const TComplejo& p) const
+{
+	TListaCom lhijos;
+	
+	if (nodo)
+	{
+		if (p < nodo->item)
+			lhijos = lhijos + nodo->iz.hijos(p);
+		
+		else if (p > nodo->item)
+			lhijos = lhijos + nodo->de.hijos(p);
+			
+		else
+		{
+			if (nodo->iz.nodo)
+			{
+				if (lhijos.EsVacia())
+					lhijos.InsCabeza(nodo->de.nodo->item);
+				else
+					lhijos.InsDerecha(nodo->de.nodo->item);
+			}
+			if (nodo->de.nodo)
+			{
+				if (lhijos.EsVacia())
+					lhijos.InsCabeza(nodo->de.nodo->item);
+				else
+					lhijos.InsDerecha(nodo->de.nodo->item);
+			}
+		}	
+	}
+	
+	return lhijos;
+}
+
+// EJERCICIO4 (julio 2010)
+/*
+TVectorCom examen(const TListaCom &l) const;
+TComplejo Simetrico(const TComplejo &c) const;
+*/
+
+TVectorCom examen(const TLsitaCom& l) const
+{
+	TVectorCom simetricos;
+	TListaPos paux;
+	int cont = 0;
+	
+	paux = l.Primera();
+	while(paux)
+	{
+		simetricos[cont] = simetrico(paux.pos->e);
+		cont++;
+	}
+	
+	return simetricos;
+}
+
+TComplejo simetrico(const TComplejo& c) const
+{
+	TComplejo resultado;
+
+	// actual
+	TNodoABB* pz = nodo;
+	TNodoABB* pd = nodo;
+	// anteriores por si es cojo
+	TNodoABB* pza = nullptr;
+	TNodoABB* pda = nullptr;
+
+	if (Raiz() == c)
+		return Raiz();
+		
+	else
+	{
+		while(!pz && !pd)
+		{
+			pza = pz;
+			pda = pd;
+			
+			if(c < pz->item)
+			{
+				pz = pz->iz.nodo;
+				pd = pd->de.nodo;
+			}
+			else
+			{
+				pz = pz->de.nodo;
+				pd = pd->iz.nodo;
+			}
+		}
+		
+		if (!pza && !pda)
+			resultado = pza->item;
+	}
+	
+	return resultado;
+}
+
+
+// EXAMEN JUNIO 2017
+// FUNCION examen DEVUELVE INT
+int TABBCom::examen(const TABBCom& tree)
+{
+	if (esVacio() && tree.EsVacio())
+		return 4;
+		
+	else if (esVacio() || tree.EsVacio())
+		return 1;
+		
+	else if (!estructura(tree))
+	{
+		if (Nodos() == tree.Nodos())
+			return 0;
+		if (Nodos() > tree.Nodos())
+			return 1;
+		if (Nodos() < tree.Nodos())
+			return 2;
+	}
+	else if (estructura(tree))
+	{
+		if (tree == *this)
+			return 4;
+		else
+			return 3;
+	}
+}
+
+bool TABBCom::estructura(const TABBCom& tree)
+{
+	TABBCom* aux = tree.nodo;
+	bool rizq;
+	bool rdrc;
+	
+	if (tope(tree))
+		return true;
+	
+	else if (ceaux(tree))
+	{
+		rizq = estructura(tree.nodo->iz);
+		rdrc = estructura(tree.nodo->de);
+		return (rizq and rdrc);
+	}
+	else
+		return false;
+		
+}
+
+bool TABBACom::tope(const TABBCom& tree)
+{
+	if (nodo->iz.EsVacio() &&
+		nodo->de.EsVacio() &&
+		tree.nodo->de.EsVacio() &&
+		tree.nodo->iz.EsVacio())
+	{
+		return true;
+	}
+}
+
+bool TABBCom::ceaux(TABBCom& tree)
+{
+	if ( (iz.EsVacio() && de.EsVacio() &&
+			aux.iz.EsVacio() && aux.de.EsVacio()) ||
+
+		(!iz.EsVacio() && !de.EsVacio() &&
+			!aux.iz.EsVacio() && !aux.de.EsVacio()) ||
+
+		(iz.EsVacio() && !de.EsVacio() &&
+			aux.iz.EsVacio() && !aux.de.EsVacio()) ||
+
+		(!iz.EsVacio() && de.EsVacio() &&
+			!aux.iz.EsVacio() && aux.de.EsVacio()) )
+	{
+		return true;
+	}
+	else
+		return false;
+}
+
+
+
+// EJERCICIO ULTIMO NIVEL
+// borrar ultimo nivel del arbol abb y
+// devolver la cantidad den nodos borrados
+int TABBCom::eliminarUltimoNivel()
+{
+	EliminarUltimoNivel(Altura(), 1);
+}
+
+int TABBCom::EliminarUltimoNivel(int h, int i)
+{
+	int eliminados = 0;
+	
+	if (nodo)
+	{
+		if (i == h)
+		{
+			eliminados += 1;
+			delete nodo;
+			nodo = nullptr;
+		}
+		else
+			eliminados += 
+				nodo->iz.EliminarUltimoNivel(h,i++) +
+				nodo->de.EliminarUltimoNivel(h,i++);
+	}
+	
+	return eliminados;
+}
+
+
+// EJERCICIO 4
+//devuelve verdadero si el nodo esta en el nivel i del arbol
+bool TABBCom::estaEnNivel(const TComplejo& c, int niv) const
+{
+	bool estaiz = false;
+	bool estade = false;
+	
+	if (nodo.EsVacio())
+	{
+		if (niv == 1)
+		{
+			if (nodo->item == c)
+				return true;
+			else 
+				return false;
+		}
+		else
+		{
+			if (c < nodo->item)
+				estaiz = nodo->iz.estEnNivel(c,niv--);
+			else
+				estade = nodo->de.estEnNivel(c,niv--);
+			
+			return estaiz and estade;
+		}
+	}
+	else
+		return false;
+}
+
+
+// EJERCICIO 5
+// devuelve un vector con los padres de los elementos
+// en el arbol, si no tiene padre se le pondra vacio en su 
+// posicion
+
+TComplejo TABBCom::soytuPadre(const TComplejo& p) const
+{
+	TComplejo padre;
+	
+	TNodoABB* panterior;
+
+	if (!nodo.EsVacio())
+	{
+		if (nodo->iz.nodo && nodo->iz.nodo->item == p ||
+			nodo->de.nodo && nodo->de.nodo->item == p)
+				return nodo->item
+		else
+		{
+			if (p < nodo->item)
+				return nodo->iz.soytuPadre(p);
+			else
+				return nodo->de.soytuPadre(p);
+		}
+	}
+	else
+		return padre;
+}
+
+TVectorCom TABBCom::padresDe(const TListaCom& lp) const
+{
+	int tamanolista = lp.Longitud();
+	int cont = 1;
+	
+	TVectorCom vpadres(lp.Longitud());
+	
+	TComplejo padre;
+
+	TListaPos auxpos;
+	
+	auxpos = lp.Primera();
+	while (!lp.Primera().EsVacia())
+	{
+		vpadres[cont] = soytuPadre(auxpos.pos->e);;
+		
+		auxpos = auxpos.Siguiente();
+		cont++;
+	}
+}
+
+
+// EJERCICIO FOTO NAZI
+int* TAVLCom::BuscaAVL(TListaCom& lp)
+{
+	int* venteros = new int [lp.Longitud()];
+	
+	int cont = 0;
+	
+	TListaPos auxpos = lp.Primera();
+	
+	TComplejo auxcom = auxpos.nodo->e;
+	
+	while (auxpos)
+	{
+		if (!Buscar(auxcom))	
+			v[cont] = 0;
+		else
+			v[cont] = hijoid(lp.Obtener(auxpos,Raiz()));
+			
+		auxpos = auxpos.Siguiente();
+		cont++;
+	}
+	
+	return v;
+}
+
+int hijoid(TComplejo c, TComplejo praiz)
+{
+	TNodoAVL* pant = praiz;	
+
+	if (!raiz.EsVacio())
+	{
+		pant = raiz;
+		
+		if (praiz == Raiz())
+			return 3;
+		else if (praiz == raiz->item && pant)
+			if
+	}
+}
+
+
+
+
+
+
+

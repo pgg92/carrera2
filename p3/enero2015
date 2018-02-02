@@ -1,0 +1,123 @@
+5 V
+6 V  muy verdadero 
+7 F es de interfaz
+8 F
+9 f	
+10 f
+11 F si fuese de clase
+12 f
+13 f
+14 f
+15 f (mirar pdf) si quitas el siempre seria v
+16 v
+17 f es extrinseco (pdf tema 1) APRENDER PREGUNTA
+18 V
+19 v
+20 v
+21 f
+22 v
+23 f
+24 v
+25 v
+26 V
+27 f
+28 v
+29 v
+30 v, en c++ puedes elegir
+31 f
+32 v
+33 f en c++ foto sobrecarga de operador
+34 f
+35 V
+36 v
+37 f
+38 f
+39 f
+40 f
+
+
+OTRAS PREGUNTAS:
+
+1) si en una clase sus constructores son privados, no se podran crear instancias de esa clase F
+
+2) si en una clase todos sus constructores son privados y todos sus metodos son de instancia, no
+se podran crear instancias de esa clase V
+
+3) no se puede heredar de un singelton F
+
+4) las clases derivdas de un singelton pueden definir nuevos constructores F 
+
+class A{
+	private static A instacia = null;
+	private A(){}
+	public static A getInstacia(){
+
+		if(instancia == null){instancia = new A();}
+		return instancia;
+	}
+}
+
+public class ParraUnica{
+	public static void main(String [] args){
+
+		//A = new A();
+		A a1 = A.getInstacia();
+		A a2 = A.getInstancia();
+		//a1 y a2 apuntan al mismo objeto
+
+	}
+
+}
+
+
+5) no se puede heredar de una clase en la que todos los constructores son privados V
+6) una clase en la que todos los constructores son privados deberia ser declara como final V
+7) todos los constructores de una clase invocan a alguno de los metodos de los constructores de la base V
+8) un constructor no puede invocar a otro constructor de la misma clase F
+
+
+---------------------------------- PDF EXAMEN DE OTROS AÑOS ----------------------------------
+
+AbstractPieza a = new SuperPieza();
+
+a.setCasilla(null); // es correcto porque el metodo esta definido en la clase AbstractPieza
+a.usaSuperPoderes(); // no es correcto porque no esta definido en la clase AbstractPieza
+((superPieza)a).usaSuperPoderes(); // es correcto
+
+-----------------------------------------------------------------------------JOSE---------------
+las siguientes sentencias producen error de compilacion
+AbstractPartida.inicializa() da error
+AbstractTablero.inicializa() no da error
+
+
+-----------------------------------------------------------------------------JOSE---------------
+Segun el diagram uml desde cualquierPieza podremos obtener los datos de la partida
+de cual forma parte.
+Falso, la tibi tuba siempre gana
+--------------------------------------------------------------------------------JOSE-----------
+Desde un metodo definido en AbstractTAblero podemos invocar al metodo usaSuperpoderes()
+de las piezas asociacas con alguna de ellas 
+V
+
+
+--------------------------------------------------------------------------------JOSE-----------
+Segun el diagrama UML no podemos tener dos casillas que poseean el mismo valor en sus coordenadas.
+F => 
+
+---------------------------------------------------------------------------------JOSE----------
+El metodo siguiente te PiezaNormla es correcto
+F
+	public AbstractPieza clone(){
+		PiezaNormal pn = super.clone();
+		return pn;
+	}
+
+
+// ESTO ESTA MAL PiezaNormal pn = super.clone();
+					devuelve tipo AbstractPieza
+una derivada apuntar a una base esta mal
+
+
+
+----------------------------------------------------------------------------------------------
+

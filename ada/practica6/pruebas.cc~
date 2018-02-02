@@ -1,0 +1,159 @@
+#include <iostream>
+#include <fstream>
+#include <vector>
+#include <cstring>
+#include <climits>
+using namespace std;
+
+
+bool leerFichero(string nf, int &fila, int &col, vector<vector<int> > &m){
+
+	int i,
+		j;
+	bool leido;
+	std::string linea;
+	std::ifstream fe;
+		
+	
+	fe.open(nf);
+	leido = false;
+	
+	if( fe.is_open() )
+	{
+		// 		 n       m 
+		fe >> fila >> col;
+		std::vector< std::vector<int> >	maux(fila, std::vector<int>(col));
+		
+		for(i = 0; i < fila; i++)
+		{
+			for(j = 0; j < col; j++)
+			{
+				fe >> maux[i][j];
+			}
+		}
+		
+		leido = true;
+		m = maux;
+		fe.close();
+	}
+	
+	return leido;	
+}
+
+int recursiva(vector<vector<int> > &m, int i, int j){
+
+/*
+	int s1, s2, s3;
+	if(i == 0 && j == 0){
+		return m[i][j];
+	}
+	else{
+		if(i > 0 && j > 0)
+			s1 = recursiva(m, i-1, j-1) + m[i][j];
+		else
+			s1 = INT_MAX;	
+		if(j > 0)
+			s2 = recursiva(m, i, j-1) + m[i][j];
+		else
+			s2 = INT_MAX;  
+		if(i > 0)
+			s3 = recursiva(m, i-1, j) + m[i][j];
+		else
+			s3 = INT_MAX;
+		return min(min(s1, s2), s3);	
+	}
+	
+	*/
+		int s1, s2, s3;
+	
+	if(i == 0 && j == 0)
+	{
+		return m[i][j];
+	}
+	else
+	{
+		if(i > 0 && j > 0)
+			s1 = recursiva(m, i-1, j-1) + m[i][j];
+		else
+			s1 = INT_MAX;	
+		if(j > 0)
+			s2 = recursiva(m, i, j-1) + m[i][j];
+		else
+			s2 = INT_MAX;  
+		if(i > 0)
+			s3 = recursiva(m, i-1, j) + m[i][j];
+		else
+			s3 = INT_MAX;
+		return std::min(std::min(s1, s2), s3);	
+	}
+	
+	
+}
+
+bool procesarArgumentos(int argc, char *argv[], bool &ign, string &nf, bool &t, bool &p){
+	bool correcto;
+	correcto = true;
+
+
+	// comprobar que las opcion no se repiten
+	ign = t = p = false;
+	if(argc >= 3 && argc <= 6){
+		for(int i = 1; i < argc && correcto; i++){
+			if(!strcmp(argv[i], "-t")){
+				t = true;
+			}
+			else{
+				if(!strcmp(argv[i], "-p")){
+					p = true;
+				}
+				else{
+					if(!strcmp(argv[i], "--ignore-recursive")){
+						ign = true;
+					}
+					else{
+						if(!strcmp(argv[i], "-f")){
+							if(i + 1 <= argc - 1){
+								nf = argv[i + 1];
+								i++;
+							}
+							else{
+								correcto = false;					
+							}
+						}
+						else{
+							correcto = false;
+						}
+					}
+				}
+			}
+		}
+	}
+	else{
+		correcto = false;
+	}
+	return correcto;
+}
+
+int main(int argc, char *argv[]){
+	int  f, c;
+	string nf;	
+	bool leido, correcto, ign, t, p;		
+	vector<vector<int> > m;
+	
+	correcto = procesarArgumentos(argc, argv, ign, nf, t, p);
+	if(correcto == false){
+		cout << "Error en argumentos. " << endl;
+	}
+	else{
+		leido = leerFichero(nf, f, c, m);
+		if(leido){
+			cout << "Recursive: " << recursiva(m, f-1, c-1) << endl;
+		}
+		else{
+			cout << "Error. no se ha podido abrir el fichero " << nf << endl;
+		}
+	}	
+	return 0;
+}
+
+

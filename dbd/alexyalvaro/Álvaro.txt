@@ -1,0 +1,223 @@
+-- REPASO EXAMEN 2016
+-- EJERCICIO 1
+
+create or replace function ejercicio1(pnif entrenador.nif%type) return char is
+  mismoNivel equipo.nivel%type;
+  cuentaNiveles number;
+  comprobarNif entrenador.nif%type;
+  valor char(9);
+  no_nif exception;
+begin 
+  valor := ' ';
+  cuentaNiveles := 0;
+  select count(*) into comprobarNif from entrenador where pnif = entrenador.nif;
+  select nivel into mismoNivel from equipo, asociacion where equipo.ASOCIACION = asociacion.codigo ;
+  select count(*) into cuentaNiveles from entrenador, asociacion where entrenador.asociacion = asociacion.codigo
+  and entrenador.nif = pnif
+  and entrenador.nivel = mismoNivel;
+  
+  if cuentaNiveles > 1 then
+    valor := 'activo';
+  else 
+    valor:= 'reubicar';
+  end if;
+  
+  if comprobarNif = 0 then
+    raise no_nif;
+  end if;
+  
+  exception
+    when no_nif then
+      escribir('El nif introducido no esta en la bbdd');
+
+  return valor;
+end;
+
+--EJERCICIO 2
+
+create or replace trigger ejercicio2 before update of destacados on asociacion 
+for each row
+declare
+  cuentaEquipos number;
+begin
+  select count(*) into cuentaEquipos 
+  from asociacion, equipo 
+  where :new.asociacion = asociacion.codigo
+  and asociacion.codigo = equipo.asociacion;
+  
+  if cuentaEquipo > 0 and :new.nivel > 5 then
+    update asociacion set destacados = (select destacados
+                                        from asociacion
+                                        where asociacion.codigo = :new.asociacion + 1);
+  end if;
+end;
+
+
+
+
+-- EJERCICIO 3
+
+create or replace trigger ejercicio3 before update of nivel on equipo
+for each row
+  declare cursor cequipos is 
+    select * from jugar where equipo1 = :new.codigo
+    or equipo2 = :new.codigo;
+    
+    asociacioneq1 asociacion.codigo%type;
+    asociacioneq2 asociacion.codigo%type;
+    niveleq1 equipo.nivel%type;
+    niveleq2 equipo.nivel%type;
+begin 
+  for creg in cequipos loop
+    select nivel into niveleq1 from equipo where equipo.codigo = creg.equipo1;
+    select nivel into niveleq2 from equipo where equipo.codigo = creg.equipo2;
+    select codigo into asociacioneq1 from asociacion where asociacion.codigo = :new.asociacion;
+    select codigo into asociacioneq2 from asociacion where asociacion.codigo = :new.asociacion;
+    if creg.equipo1 = creg.equipo2 then
+      raise_application_error(-20000,'EL EQUIPO ' || creg.equipo1 || ' no se puede enfrentar a el mismo');
+    elsif asociacioneq1 <> asociacioneq2 then
+      if niveleq1 > niveleq2 then
+        update equipo set nivel = niveleq2;
+        dbms_output.put_line('el equipo ' || creg.equipo1 || ' a pasado ha tener el nivel de ' || niveleq2);
+      elsif niveleq2 > niveleq1 then
+        update equipo set nivel = niveleq1;
+        dbms_output.put_line('el equipo ' || creg.equipo2 || ' a pasado ha tener el nivel de ' || niveleq1);
+      end if;
+    end if;
+  end loop;
+end;
+
+
+-- EJERCICIO 7
+
+create or replace trigger ejercicio7 before update of asociacion on equipo
+for each row
+  declare cursor centrenador is 
+    select * from entrenador where ASOCIACION = :new.asociacion and NIVEL = :new.nivel;
+    
+    numEntrenadores number;
+    
+begin
+  numEntrenadores := 0;
+  select count(*) into numEntrenadores from equipo where asociacion = :new.asociacion;
+  if numEntrenadores > 0 then
+      raise_application_error(-20000,'La asociacion ' || :new.nombre || ' no tiene entrenadores');
+  else  
+    for creg in centrenador loop
+      insert into responsables values (creg.nif,creg.codigo);
+    end loop;
+  end if;
+end;
+
+-- EJERCICIO 4
+
+create or replace procedure ejercicio4(x number) is
+
+  cursor cequipos is
+    select * from asociacion;
+    
+  cursor centrenador is
+    select * from entrenador;
+    
+    numEquipos number;
+    numEntrenadores number;
+    no_asociacion exception;
+    
+begin 
+  for creg in cequipos loop
+    select count(*) into numEquipos from equipo where creg.codigo = equipo.asociacion;
+    select count(*) into numEntrenadores from entrenador where creg.codigo = entrenador.asociacion;
+    
+    if numEquipos >= x then
+      if numEntrenadores = 0 then
+        insert into desiertas (codigo,nombre,total) values (creg.codigo,creg.nombre,numEquipo);
+      else
+        escribir(creg.codigo || ' ' || creg.nombre || ' ' || numEntrenadores);
+          for creg2 in centrenador loop
+            escribir(creg2.nif|| ' ' || creg2.nombre);
+          end loop;
+        end if;
+    else
+      raise no_asociacion;
+    end if;
+  end loop;
+     exception 
+        when no_asociacion then
+          escribir('No hay asociaciones con ' || x || ' o mas equipos');
+end;
+
+insert into entrenador (asociacion,nombre,nivel,nif) values('11','alv',1,'0100');
+insert into entrenador (asociacion,nombre,nivel,nif) values('1','alv1',1,'0200');
+insert into entrenador (asociacion,nombre,nivel,nif) values('111','alv2',1,'0300');
+insert into entrenador (asociacion,nombre,nivel,nif) values('E1','alv3',1,'0400');
+insert into entrenador (asociacion,nombre,nivel,nif) values('R','alv4',1,'0500');
+
+insert into entrenador (asociacion,nombre,nivel,nif) values('','juan1','FF',2,'0600');
+insert into entrenador (asociacion,nombre,nivel,nif) values('RE2','pepe1',2,'0700');
+insert into entrenador (asociacion,nombre,nivel,nif) values('RE2','pepe2',2,'0800');
+insert into entrenador (asociacion,nombre,nivel,nif) values('RE5','nazi',2,'0900');
+insert into entrenador (asociacion,nombre,nivel,nif) values('R1','raul',3,'1000');
+
+insert into entrenador (asociacion,nombre,nivel,nif) values('RE6','oscar',4,'1100');
+insert into entrenador (asociacion,nombre,nivel,nif) values('RE6','jose',5,'1200');
+insert into entrenador (asociacion,nombre,nivel,nif) values('RE6','roman',4,'1300');
+insert into entrenador (asociacion,nombre,nivel,nif) values('RE9','puta',5,'1400');
+insert into entrenador (asociacion,nombre,nivel,nif) values('RE0','copia',4,'1500');
+
+--INSERTAR TABLA ENTRENADORES
+--INSERTAR TABLA ENTRENADORES
+insert into equipo (asociacion,nombre,nivel,codigo) values('11','al01',1,'01');
+insert into equipo (asociacion,nombre,nivel,codigo) values('1','BB',1,'02');
+insert into equipo (asociacion,nombre,nivel,codigo) values('111','CC',1,'03');
+insert into equipo (asociacion,nombre,nivel,codigo) values('E1','DD',1,'04');
+insert into equipo (asociacion,nombre,nivel,codigo) values('R','EE',1,'05');
+
+insert into equipo (asociacion,nombre,nivel,codigo) values('','RE2','FF',2,'06');
+insert into equipo (asociacion,nombre,nivel,codigo) values('RE3','GG',2,'07');
+insert into equipo (asociacion,nombre,nivel,codigo) values('RE4','HH',2,'08');
+insert into equipo (asociacion,nombre,nivel,codigo) values('RE5','II',2,'09');
+insert into equipo (asociacion,nombre,nivel,codigo) values('R1','JJ',3,'10');
+
+insert into equipo (asociacion,nombre,nivel,codigo) values('RE6','KK',4,'11');
+insert into equipo (asociacion,nombre,nivel,codigo) values('RE7','LL',5,'12');
+insert into equipo (asociacion,nombre,nivel,codigo) values('RE8','NN',4,'13');
+insert into equipo (asociacion,nombre,nivel,codigo) values('RE9','PP',5,'14');
+insert into equipo (asociacion,nombre,nivel,codigo) values('RE0','OO',4,'15');
+
+--INSERTAR TABLA ENTRENADORES
+insert into ASOCIACION values('11','AA',1);
+insert into ASOCIACION values('1','BB',1);
+insert into ASOCIACION values('111','CC',1);
+insert into ASOCIACION values('E1','DD',1);
+insert into ASOCIACION values('R','EE',1);
+
+insert into ASOCIACION values('RE2','FF',2);
+insert into ASOCIACION values('RE3','GG',2);
+insert into ASOCIACION values('RE4','HH',2);
+insert into ASOCIACION values('RE5','II',2);
+insert into ASOCIACION values('R1','JJ',3);
+
+insert into ASOCIACION values('RE6','KK',4);
+insert into ASOCIACION values('RE7','LL',5);
+insert into ASOCIACION values('RE8','NN',4);
+insert into ASOCIACION values('RE9','PP',5);
+insert into ASOCIACION values('RE0','OO',4);
+
+-- EJERCICIO 8 
+
+  
+
+create or replace procedure ejer is
+  cursor c1 is
+    select count(*) cuentaEntrenadores,entrenador.ASOCIACION, entrenador.NIF, entrenador.NIVEL, entrenador.NOMBRE
+    from entrenador, asociacion
+    where entrenador.asociacion = asociacion.codigo
+    group by asociacion.codigo, entrenador.ASOCIACION, entrenador.NIF, entrenador.NIVEL, entrenador.NOMBRE;
+begin
+  DBMS_OUTPUT.PUT_LINE('hola1');
+  for creg in c1 loop
+    DBMS_OUTPUT.PUT_LINE('hola');
+  end loop;
+end;
+
+exec ejer;

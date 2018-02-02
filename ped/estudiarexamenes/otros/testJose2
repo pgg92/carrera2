@@ -1,0 +1,88 @@
+2.
+Ultima(lista) => lista, es una modificadora
+
+/*
+CONSTRUCTORAS GENERADORAS
+pila:
+crear() => pila
+apilar(pila) => pila
+
+natural:
+cero() => pila
+suc(natural) => natural
+
+cola:
+crear() => cola
+encolar(cola) => cola
+
+lista:
+crear() => lista
+insertarCabeza(lista, item) => lista
+
+vector:
+crear() => vector
+asignar(vector, posicion, valor) => vector
+
+arbol:
+crear() => arbol
+enraizar(arbol, item, arbol) => arbol
+
+posicion:
+crear() => posicion
+primera(lista) => posicion
+*/
+
+3.
+es al contrario
+
+4.
+True, por eso se llaman directos
+
+5.
+False, tienen que darte la semantica
+
+6.
+True,
+
+() -> () -> (fondo) -> ...
+encolar: 0(1)
+
+(fondo) -> () -> () -> ...
+encolar: 0(n)
+
+7.
+False, depende como implementes ambos TAD
+
+8.
+tendria dos recorridos y serian inordne
+8.1
+t, para recontruir un arbol necesitamos dos recorridos y uno de ellos debe ser inorden
+si elabb, ordenando las etiquetas del recorrido que ma dan obtenemos inorden
+8.2
+f, porque no es de busqueda
+
+
+9.
+f, si insertas: mayor menor mayor menor... tambien puedes degradar a lista
+9 5 7 6
+				9
+				/
+			   5
+			   	\
+			   	 7
+			   	/
+			   6
+10.
+f, devuelve el mayor elemento del arbol,
+tendria que ser le primero que no tiene hijo izquierdo
+
+11.
+
+
+
+
+
+
+
+
+

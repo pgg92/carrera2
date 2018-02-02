@@ -1,0 +1,41 @@
+create or replace trigger ejercicio3julio
+before insert or update of nivel on equipo
+for each row
+declare
+
+    asociacione1 asociacion.codigo%type;
+    asociacione2 asociacion.codigo%type;
+    nivele1 equipo.nivel%type;
+    nivele2 equipo.nivel%type;
+
+begin
+
+    select equipo1, equipo2
+    into asocacione1, asociacione2
+    from jugar, equipo
+    where equipo1 = :new.equipo1 and
+    equipo2 = :new.equipo2;
+
+    select nivel into nivele1 from equipo
+    where equipo.codigo = :new.equipo1;
+
+    select nivel into nivele2 from equipo
+    where equipo.codigo = :new.equipo2;
+
+    if :new.equipo1 = :new.equipo2 then
+        raise_application_error
+        (-20000, 'El equipo' || :new.equipo1 
+        || 'no se puede enfrentar a si mismo');
+
+    elsif asociacione1 <> asociacione2 then
+        if nivele1 > nivele2 then
+            update equipo2 set nivel = nivele1;
+            escribir('El equipo' || :new.equipo2 || 'ha pasado a tener nivel'
+            || nivele1);
+        else
+            update equipo1 set nivel = nivele1;
+            escribir('El equipo' || :new.equipo1 || 'ha pasado a tener nivel'
+            || nivele2);
+        end if;
+    end if;
+end;

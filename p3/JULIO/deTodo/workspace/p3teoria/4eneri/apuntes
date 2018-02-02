@@ -1,0 +1,50 @@
+MiBase b = new MiBase();
+MiBase n2 = new Derivada();
+
+Ambos llaman a la base
+
+
+/*   COGER DEL GRUPO LA FOTO   */
+
+
+
+
+
+
+
+
+
+
+
++++++ APUNTES DE UML ++++++
+
+PREGUNTA 1
+
+PREGUNTA 2
+
+la excepcion hereda de exception
+es de tipo checked porque hereda de una checked
+hay que poner el bloque try cath
+
+PREGUNTA 10
+
+no sabe si esta bien la pregunta, borrar
+
+?¿ falsa
+en la composicion no puedes
+
+?¿ verdadera
+
+
+
+
+
+******** rexamen prueba ******
+
+
+31.f
+32. v porque son abstractos
+
+final tema herencia aprender, cuando compara herencia y la composicion
+
+40. puedes implementar una interfaz con una clase abstracta

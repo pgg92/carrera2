@@ -1,0 +1,39 @@
+create or replace procedure averias(pclase clase.tipo%type) is
+  cdescripcion clase.descripcion%type;
+  cursor caverias is
+    select distinct(codigo), nombre from averia, reparar, vehiculo
+    where reparar.averia = averia.codigo and reparar.vehiculo = vehiculo.matricula
+    and vehiculo.clase = pclase;
+  maxpendientes number;
+  cursor cvehiculos is
+    select * from vehiculo where clase = pclase;
+  numReparaciones number;
+  cuantos number;
+  sin_reparaciones exception;
+begin 
+    select descripcion into cdescripcion from clase where tipo = pclase;
+    cuantos := 0;
+    dbms_output.put_line(cdescripcion);
+    for creg in caverias loop
+      dbms_output.put_line(creg.codigo || creg.nombre);
+      cuantos := cuantos + 1;
+    end loop;
+    if cuantos = 0 then
+      raise sin_reparaciones;
+    end if;
+    select max(pagosPendientes) into maxpendientes from vehiculo;
+    for creg in cvehiculos loop
+      if creg.pagosPendientes = maxpendientes then
+        select count(*) into numReparaciones from reparar
+        where vehiculo = creg.matricula;
+        if creg.pagosPendientes = numReparaciones then
+          update vehiculo set bloquear = 's' where matricula = creg.matricula;
+        end if;
+      end if;
+    end loop;
+  exception
+    when no_data_found then
+      dbms_output.put_line('no existe la clase ' || pclase);
+    when sin_reparaciones then
+      dbms_output.put_line('nohay reparaciones para la clase ' || pclase);
+end;

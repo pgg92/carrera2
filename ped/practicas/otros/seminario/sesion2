@@ -1,0 +1,49 @@
+/* PED SESION2 */
+
+int *pInt = new int; // le reservas zona de memoria para un int
+TComplejo PTcom = new TComplejo(2.0) // reservas una zona de memoria donde llamas al constructor
+
+TComplejo = *TVectorCom;
+TvectorCom = new TComplejo[10]; //llamas al constructor 10 veces
+
+
+=> LIBERACION DE MEMORIA <=
+
+-(primera)
+// borra la primera posicion, gcc detecta que es un puntero
+if(TVectorCom != null){
+	delete TVectorCom;
+	TVectorCom = null;
+}
+
+// borra toda la memoria reservada
+if(TVectorCom != null){
+	delete [] TVectorCom;
+	TVectorCom = null;
+}
+
+// si no ponemos ese puntero a null despues de borrarlo si lo "volvemos a borrar"
+// daria error de segmentacion. Siempre inicializar los punteros para que no de basura
+
+=> SOBRECARGA <=
+
+a = b + c;
+
+// el operando izquierda es el que llama al operando
+// el derecho es el argumento
+a.operator=(b.operator+(c))
+
+
+/*-si modifica el operando izquierdo
+almacenar el resultado en propio objeto
+liberas las memoria de this
+devolver objeto (this) */
+
+/*-No modificas el de la izquierda
+crear objeto temporal que almacene
+devuelve objeto temporal
+*/
+
+complejo = a + 3 //utilziamos uno de la clase, llama un operando de clase (a)
+complejo = 3 + a //utilizamos las amigas, llama operando que no es de clase (3)
+			// amigo porque quiero que acceda a la parte privada

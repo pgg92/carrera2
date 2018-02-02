@@ -1,0 +1,39 @@
+1.
+T,	utiliza otras operadoras internas, utiliza la suma
+	generadoras != derivada, nunca pueden serlo
+2.
+T
+
+3.
+T,	si el arbol es BB, si esta en el peor caso,
+	degradado a lista, la altura es el nº de nodos
+
+4.
+F, devuelve el primero
+
+5.
+	devuelve el numero de nodos de la lista
+	devuelve un nodo mas
+
+6.
+T	
+
+7.
+F
+
+8.
+F, IRD, RID, DRI, RDI, DIR
+
+9.
+
+
+10.
+
+
+11. las operaciones constructoras generadoras tiene sintaxis pero no semantica
+
+12. en un arbol binario completo todos los nodos hojas estan al mismo nivel
+F
+13. en un arbol binario lleno todos los nodos hojas estan al mismo nivel
+T
+

@@ -1,0 +1,7 @@
+﻿  StdAfx.cpp
+  Fast Data Transfer.cpp
+e:\documents\ua\docencia\obligatorias\arquitectura\ac gii\2017\práctica\fase iii\net c++\net data transfer (comparando assembler + c)\fast_data_transfer_demo\fast data transfer\fast data transfer.cpp(56): warning C4996: 'getche': The POSIX name for this item is deprecated. Instead, use the ISO C and C++ conformant name: _getche. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\conio.h(455): note: vea la declaración de 'getche'
+Fast Data Transfer.obj : warning LNK4075: se omite '/EDITANDCONTINUE' debido a la especificación '/SAFESEH'
+  Fast Data Transfer.vcxproj -> e:\Documents\UA\docencia\obligatorias\Arquitectura\AC GII\2017\práctica\fase III\NET C++\NET Data Transfer (comparando assembler + C)\Fast_Data_Transfer_demo\Fast Data Transfer\.\Debug\Fast Data Transfer.exe
+  Fast Data Transfer.vcxproj -> .\Debug/Fast Data Transfer.pdb (Full PDB)

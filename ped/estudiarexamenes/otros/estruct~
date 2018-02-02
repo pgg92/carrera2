@@ -1,0 +1,50 @@
+#lang r6rs
+(import (rnrs base)
+        (rnrs io simple)
+        (rnrs lists (6))
+        (schemeunit))
+
+
+(define (hoja? dato)
+   (not (list? dato)))
+(define (plana? lista)
+   (or (null? lista)
+       (and (hoja? (car lista))
+            (plana? (cdr lista)))))
+(define (estructurada? lista)
+   (if (null? lista)
+      #f
+      (or (list? (car lista))
+          (estructurada? (cdr lista)))))
+
+(define (buscar lista x)
+  (cond
+    ((null? lista) #f)
+    ((hoja? lista) (equal? lista x))
+    (else (or
+           (buscar (car lista) x)
+           (buscar (cdr lista) x)))))
+
+(define (sumar lista)
+  (cond
+   ((null? lista) 0)
+   ((hoja? lista) lista)
+   (else (+
+          (sumar(car lista))
+          (sumar(cdr lista))))))
+
+(define (decrementar lista)
+  (cond
+    ((null? lista) '())
+    ((hoja? lista) (- lista 1))
+    (else (append
+           (decrementar (car lista))
+           (decrementar (cdr lista))))))
+
+(define (sumarnivel lista nivel)
+  (cond
+    ((null? lista) 0)
+    ((null? nivel) 0)
+    ((equal? nivel 0) (sumar (cdr lista)))
+    (else
+     (+ 
