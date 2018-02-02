@@ -1,0 +1,100 @@
+[13:55, 8/3/2017] Jose A12: #lang r6rs
+(import (rnrs base)
+        (rnrs io simple)
+        (rnrs lists (6))
+        (schemeunit))
+
+(define (ultimo lista)
+  (if (null? (cdr lista))
+      (car lista)
+      (ultimo (cdr lista))))
+
+(define (quita-ultimo lista)
+  (if (null? (cdr lista))
+      '()
+      (cons (car lista) (quita-ultimo (cdr lista)))))
+
+(define (rotar sentido lista)
+  (if (eq? '> sentido)
+      (cons (ultimo lista) (quita-ultimo lista))
+      (append (cdr lista) (list (car lista)))))
+
+(define (rotar-n simbolo lista n)
+  (if (= n 0)
+      lista
+      (rotar simbolo (rotar-n simbolo lista (-n 1)))))
+
+(define (rotar-n-tail simbolo lista n)
+  (if (= n 0)
+      lista
+      (rotar-n-tail simbolo (rotar simbolo lista) (- n 1))))
+
+(define (g f h z)
+  (f (h z)))
+
+(g (lambda (x) (+ x x)) (lambda 👍 (* y y)) 3)
+
+(define (h f)
+  f)
+
+((h (lambda (x) (+ x x))) 3)
+
+((lambda a f b) (f a b) 2 - 4) ; -2
+
+(define (aplica-funcion f lista)
+  (if (null? lista)
+      '()
+      (cons (f (car lista))
+            (aplica-funcion f (cdr lista)))))
+
+(define (func lista)
+  (if (null? lista)
+      '()
+      (cons
+       (aplica-funcion
+        (caar lista)
+        (cdr (car lista)))
+       (func (cdr lista)))))
+
+(define (func-fos lista)
+  (map (lambda (x)
+         (map (car x) (cdr x))) lista))
+
+(define (dif p)
+  (abs (- (car p) (cdr p))))
+
+(define (mayor-que lista a)
+  (if (null? lista)
+      '()
+      (if (> (dif (car lista) a))
+          (cons (car lista) (mayor-que (cdr lista) a))
+          (mayor-que (cdr lista) a))))
+
+(define (mayor-que lista a)
+  (filter (lambda (x)
+            (>= (dif x) a)) lista))
+
+(define (suma-par lista)
+  (filter (lambda (x) (even? x))
+          (map (lambda(x) (+ (car x) (cdr x)))) lista))                        
+[13:55, 8/3/2017] Jose A12: #aplicativo, primero lo de dentro
+// en que orden evaluo los argumentos?
+(g (f 3 2) (- 3 2)) =>
+(g (f 3 2) 1) =>
+(g (g (+ 3 2) 3) 1) =>
+(g (g 5 3) 1) =>
+(g (+ (* 5 3) 3) 1) =>
+(g (+ 15 3) 1) =>
+(g 18 1) =>
+(+ (* 18 1) 1) => 19
+
+#normal
+(g (f 3 2) (- 3 2)) => // no evaluamos la f son parametros?
+(+ (* (f 3 2) (- 3 2)) (- 3 2)) =>
+(+ (* (g (+ 3 2) 3) (- 3 2)) (- 3 2)) =>
+(+ (* (+ (* (+ 3 2) 3) (- 3 2)) (- 3 2)) =>
+(+ (* (+ (* 5 3) 3) (- 3 2)) (-3 2))=>
+(+ (* (+ 15 3) (- 3 2)) (- 3 2) =>
+(+ (* 18 1) 1) => 
+(+ 18 1) => 
+19
