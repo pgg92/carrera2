@@ -1,9 +1,0 @@
-
-
-CLONE()
-
-
-forma canonica => clone lo tienes pero no se puede usar hasta
-que lo sobreescriber
-Visibilidad proctected
-Aseguras que solo clonas cuando defines clone()				
