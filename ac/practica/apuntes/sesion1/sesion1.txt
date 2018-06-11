@@ -1,7 +1,0 @@
-﻿// AC-PRACTICA 3FREBRERO 
-
-spec.org (benchmark)
-
-Genesis Paterson
-
-benchmark sintetico = el programa simula una carga
