@@ -1,4 +1,4 @@
-// ALIAGA HYDER ALEJANDRO JESÚS DNI: 48765284V 
+
 
 #include <iostream>
 #include <fstream>
